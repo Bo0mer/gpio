@@ -1,13 +1,11 @@
 package gpio
 
-import "github.com/davecheney/gpio"
+type Light struct {
+	pin Pin
+}
 
-func NewLight(n int) (*Light, error) {
-	pin, err := gpio.OpenPin(n, gpio.ModeOutput)
-	if err != nil {
-		return nil, err
-	}
-
+func NewLight(pin Pin) (*Light, error) {
+	pin.SetMode(ModeOutput)
 	return &Light{
 		pin: pin,
 	}, nil

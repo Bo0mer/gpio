@@ -1,23 +1,15 @@
 package gpio
 
-import (
-	"time"
-
-	"github.com/davecheney/gpio"
-)
+import "time"
 
 type Blinker struct {
-	pin      gpio.Pin
+	pin      Pin
 	interval time.Duration
 	stop     chan struct{}
 }
 
-func NewBlinker(n int, interval time.Duration) (*Blinker, error) {
-	pin, err := gpio.OpenPin(n, gpio.ModeOutput)
-	if err != nil {
-		return nil, err
-	}
-
+func NewBlinker(pin Pin, interval time.Duration) (*Blinker, error) {
+	pin.SetMode(ModeOutput)
 	return &Blinker{
 		pin:      pin,
 		interval: interval,

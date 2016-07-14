@@ -1,16 +1,12 @@
 package gpio
 
-import (
-	"time"
-
-	"github.com/davecheney/gpio"
-)
+import "time"
 
 const statePressed = false
 const stateReleased = true
 
 type Button struct {
-	pin gpio.Pin
+	pin Pin
 
 	lastChange time.Time
 	state      bool
@@ -19,11 +15,8 @@ type Button struct {
 	onRelease func()
 }
 
-func NewButton(n int, onPress, onRelease func()) (*Button, error) {
-	pin, err := gpio.OpenPin(n, gpio.ModeInput)
-	if err != nil {
-		return nil, err
-	}
+func NewButton(pin Pin, onPress, onRelease func()) (*Button, error) {
+	pin.SetMode(ModeInput)
 	b := &Button{
 		pin:        pin,
 		lastChange: time.Now(),
@@ -32,7 +25,7 @@ func NewButton(n int, onPress, onRelease func()) (*Button, error) {
 		onRelease:  onRelease,
 	}
 
-	pin.BeginWatch(gpio.EdgeBoth, func() {
+	pin.BeginWatch(EdgeBoth, func() {
 		state := pin.Get()
 		now := time.Now()
 		if b.state != state && now.Sub(b.lastChange) > time.Millisecond*50 {
@@ -55,8 +48,4 @@ func (b *Button) Close() error {
 		return err
 	}
 	return b.pin.Close()
-}
-
-type Light struct {
-	pin gpio.Pin
 }
