@@ -8,7 +8,10 @@ type Light struct {
 // NewLight creates a Light on the specified GPIO pin.
 // It is caller's responsiblity to open the GPIO pin with Output mode.
 func NewLight(pin Pin) (*Light, error) {
-	pin.SetMode(ModeOutput)
+	if pin.Mode() != ModeOutput {
+		return nil, &UnsupportedModeError{pin.Mode()}
+	}
+
 	return &Light{
 		pin: pin,
 	}, nil

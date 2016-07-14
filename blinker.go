@@ -12,7 +12,10 @@ type Blinker struct {
 // NewBlinker creates a Blinker on the specified GPIO pin.
 // It is caller's responsiblity to open the GPIO pin with Output mode.
 func NewBlinker(pin Pin, interval time.Duration) (*Blinker, error) {
-	pin.SetMode(ModeOutput)
+	if pin.Mode() != ModeOutput {
+		return nil, &UnsupportedModeError{pin.Mode()}
+	}
+
 	return &Blinker{
 		pin:      pin,
 		interval: interval,

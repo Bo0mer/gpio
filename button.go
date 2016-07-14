@@ -19,7 +19,10 @@ type Button struct {
 // NewButton creates a button on the specified GPIO pin.
 // It is caller's responsiblity to open the GPIO pin with Input mode.
 func NewButton(pin Pin, onPress, onRelease func()) (*Button, error) {
-	pin.SetMode(ModeInput)
+	if pin.Mode() != ModeInput {
+		return nil, &UnsupportedModeError{pin.Mode()}
+	}
+
 	b := &Button{
 		pin:        pin,
 		lastChange: time.Now(),
