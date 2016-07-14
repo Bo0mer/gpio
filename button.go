@@ -5,6 +5,7 @@ import "time"
 const statePressed = false
 const stateReleased = true
 
+// Button represents a hardware button connected on a GPIO pin.
 type Button struct {
 	pin Pin
 
@@ -15,6 +16,8 @@ type Button struct {
 	onRelease func()
 }
 
+// NewButton creates a button on the specified GPIO pin.
+// It is caller's responsiblity to open the GPIO pin with Input mode.
 func NewButton(pin Pin, onPress, onRelease func()) (*Button, error) {
 	pin.SetMode(ModeInput)
 	b := &Button{
@@ -43,6 +46,7 @@ func NewButton(pin Pin, onPress, onRelease func()) (*Button, error) {
 	return b, nil
 }
 
+// Close frees all resoruces allocated by the button.
 func (b *Button) Close() error {
 	if err := b.pin.EndWatch(); err != nil {
 		return err
